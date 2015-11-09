@@ -1,2 +1,2 @@
 # formwizard
-A small and simple wizard library
+A small and simple wizard library.
