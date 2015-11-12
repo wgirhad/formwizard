@@ -92,27 +92,48 @@ function FormWizard(elem) {
 
     _obj.Next = Next;
     _obj.Prev = Prev;
+    _obj.First = First;
+    _obj.Last = Last;
+    _obj.GoTo = GoTo;
 
     updateView();
 
     function Next() {
         if (_actualTab >= _nTabs-1) return elem;
         _actualTab++;
-        updateView();
-        return elem;
+        return updateView();
     }
 
     function Prev() {
         if (_actualTab <= 0) return elem;
         _actualTab--;
-        updateView();
-        return elem;
+        return updateView();
+    }
+
+    function First() {
+        if (_actualTab == 0) return elem;
+        _actualTab = 0;
+        return updateView();
+    }
+
+    function Last() {
+        if (_actualTab == _nTabs-1) return elem;
+        _actualTab = _nTabs-1;
+        return updateView();
+    }
+
+    function GoTo(n) {
+        if (_actualTab == n) return elem;
+        _actualTab = Math.max(Math.min(n, _nTabs-1), 0);
+        return updateView();
     }
 
     function updateView() {
         hideShowNextPrev();
         hideShowElements();
         hideShowTabs();
+
+        return elem;
     }
 
     function hideShowElements() {
