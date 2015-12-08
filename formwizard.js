@@ -75,6 +75,7 @@ $(".fw-container").formWizard();
 function FormWizard(elem) {
     var
         _obj = {},
+        _labels = {},
         _tabs,
         _nTabs,
         _actualTab,
@@ -90,13 +91,25 @@ function FormWizard(elem) {
     _prevBtn = elem.find(".fw-prev").click(Prev);
     _submitBtn = elem.find(".fw-submit");
 
+    elem.find(".fw-goto").click(GoToClick);
+    elem.find(".fw-goto-label").click(GoToLabelClick);
+
     _obj.Next = Next;
     _obj.Prev = Prev;
     _obj.First = First;
     _obj.Last = Last;
     _obj.GoTo = GoTo;
 
+    indexLabels();
     updateView();
+
+    function indexLabels() {
+        _tabs.each(function(i) {
+            if ("fwLabel" in this.dataset) {
+                _labels[this.dataset.fwLabel] = i;
+            }
+        });
+    }
 
     function Next() {
         if (_actualTab >= _nTabs-1) return elem;
@@ -120,6 +133,18 @@ function FormWizard(elem) {
         if (_actualTab == _nTabs-1) return elem;
         _actualTab = _nTabs-1;
         return updateView();
+    }
+
+    function GoToClick(e) {
+        return GoTo(this.dataset.fwGoto);
+    }
+
+    function GoToLabelClick(e) {
+        return GoToLabel(this.dataset.fwGoto);
+    }
+
+    function GoToLabel(label) {
+        return GoTo(_labels[label]);
     }
 
     function GoTo(n) {
