@@ -157,6 +157,7 @@ function FormWizard(elem) {
         hideShowNextPrev();
         hideShowElements();
         hideShowTabs();
+        classSwitcher();
 
         return elem;
     }
@@ -205,9 +206,34 @@ function FormWizard(elem) {
         }
     }
 
+    function classSwitcher() {
+        elem.find(".fw-class").each(function() {
+            var insertsDefault = true;
+            var _par = this.dataset.fwClass.split(';');
+            var _def = _par.pop();
+            var $jq = $(this);
+            var helper;
+
+            $jq.removeClass(_def);
+
+            for (var i in _par) {
+                helper = _par[i].split(":");
+
+                if (helper[1] == _actualTab) {
+                    insertsDefault = false;
+                    $jq.addClass(helper[0]);
+                } else {
+                    $jq.removeClass(helper[0]);
+                }
+            }
+
+            if (insertsDefault) {
+                $jq.addClass(_def);
+            }
+        });
+    }
+
     return _obj;
 }
-
-
 
 }(jQuery));
