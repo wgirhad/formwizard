@@ -110,10 +110,20 @@ function FormWizard(elem) {
 
     function indexLabels() {
         _tabs.each(function(i) {
-            if ("fwLabel" in this.dataset) {
-                _labels[this.dataset.fwLabel] = i;
-            }
+            if (hasLabel(i)) _labels[getLabel(i)] = i;
         });
+    }
+
+    function hasLabel(i) {
+        return ("fwLabel" in _tabs[i].dataset);
+    }
+
+    function getLabel(i) {
+        try {
+            return _tabs[i].dataset.fwLabel;
+        } catch(e) {
+            return i;
+        }
     }
 
     function Next() {
@@ -168,28 +178,25 @@ function FormWizard(elem) {
     }
 
     function hideShowElements() {
+        var values = [_actualTab];
+        if (hasLabel(_actualTab)) values.push(getLabel(_actualTab));
+        if (_actualTab == _nTabs - 1) values.push("last");
+
         fwFind("[data-fw-visible-on]")
             .fwInputHide()
-            .filter("[data-fw-visible-on=\"" + _actualTab + "\"]")
+            .filter(mtAt("data-fw-visible-on", values))
             .fwInputShow();
 
         fwFind("[data-fw-hidden-on]")
             .fwInputShow()
-            .filter("[data-fw-hidden-on=\"" + _actualTab + "\"]")
+            .filter(mtAt("data-fw-hidden-on", values))
             .fwInputHide();
+    }
 
-        // Regra para "last"
-        if (_actualTab < _nTabs - 1) return false;
-
-        fwFind("[data-fw-visible-on]")
-            .fwInputHide()
-            .filter("[data-fw-visible-on=\"last\"]")
-            .fwInputShow();
-
-        fwFind("[data-fw-hidden-on]")
-            .fwInputShow()
-            .filter("[data-fw-hidden-on=\"last\"]")
-            .fwInputHide();
+    function mtAt(attr, values) {
+        return values.map(function(a) {
+            return "[" + attr + "=\"" + a + "\"]";
+        }).join(",");
     }
 
     function hideShowTabs() {
