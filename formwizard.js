@@ -76,6 +76,7 @@ function FormWizard(elem) {
     var
         _obj = {},
         _labels = {},
+        _fchild = $(),
         _tabs,
         _nTabs,
         _actualTab,
@@ -83,16 +84,20 @@ function FormWizard(elem) {
         _nextBtn,
         _submitBtn;
 
-    _tabs  = elem.find(".fw-tab");
+    if (elem.prop('id').length) {
+        _fchild = $("[data-fw-parent=\"" + elem.prop('id') + "\"]");
+    }
+
+    _tabs  = fwFind(".fw-tab");
     _nTabs = _tabs.length;
-    _actualTab = _tabs.index(elem.find(".fw-tab.fw-active"));
+    _actualTab = _tabs.index(fwFind(".fw-tab.fw-active"));
 
-    _nextBtn = elem.find(".fw-next").click(Next);
-    _prevBtn = elem.find(".fw-prev").click(Prev);
-    _submitBtn = elem.find(".fw-submit");
+    _nextBtn = fwFind(".fw-next").click(Next);
+    _prevBtn = fwFind(".fw-prev").click(Prev);
+    _submitBtn = fwFind(".fw-submit");
 
-    elem.find(".fw-goto").click(GoToClick);
-    elem.find(".fw-goto-label").click(GoToLabelClick);
+    fwFind(".fw-goto").click(GoToClick);
+    fwFind(".fw-goto-label").click(GoToLabelClick);
 
     _obj.Next = Next;
     _obj.Prev = Prev;
@@ -163,12 +168,12 @@ function FormWizard(elem) {
     }
 
     function hideShowElements() {
-        elem.find("[data-fw-visible-on]")
+        fwFind("[data-fw-visible-on]")
             .fwInputHide()
             .filter("[data-fw-visible-on=\"" + _actualTab + "\"]")
             .fwInputShow();
 
-        elem.find("[data-fw-hidden-on]")
+        fwFind("[data-fw-hidden-on]")
             .fwInputShow()
             .filter("[data-fw-hidden-on=\"" + _actualTab + "\"]")
             .fwInputHide();
@@ -176,12 +181,12 @@ function FormWizard(elem) {
         // Regra para "last"
         if (_actualTab < _nTabs - 1) return false;
 
-        elem.find("[data-fw-visible-on]")
+        fwFind("[data-fw-visible-on]")
             .fwInputHide()
             .filter("[data-fw-visible-on=\"last\"]")
             .fwInputShow();
 
-        elem.find("[data-fw-hidden-on]")
+        fwFind("[data-fw-hidden-on]")
             .fwInputShow()
             .filter("[data-fw-hidden-on=\"last\"]")
             .fwInputHide();
@@ -206,8 +211,12 @@ function FormWizard(elem) {
         }
     }
 
+    function fwFind(selector) {
+        return elem.find(selector).add(_fchild.filter(selector));
+    }
+
     function classSwitcher() {
-        elem.find(".fw-class").each(function() {
+        fwFind(".fw-class").each(function() {
             var insertsDefault = true;
             var _par = this.dataset.fwClass.split(';');
             var _def = _par.pop();
