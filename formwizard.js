@@ -235,7 +235,7 @@ function FormWizard(elem) {
             for (var i in _par) {
                 helper = _par[i].split(":");
 
-                if (helper[1] == _actualTab) {
+                if (isActualClass(helper[1])) {
                     insertsDefault = false;
                     $jq.addClass(helper[0]);
                 } else {
@@ -247,6 +247,13 @@ function FormWizard(elem) {
                 $jq.addClass(_def);
             }
         });
+
+        function isActualClass(val) {
+            if (val == _actualTab) return true;
+            if (hasLabel(_actualTab) && getLabel(_actualTab) == val) return true;
+            
+            return false;
+        }
     }
 
     return _obj;
