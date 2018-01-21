@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+if (!modules) var modules = {};
+
 (function($){
 
 "use strict";
@@ -84,31 +86,43 @@ function FormWizard(elem) {
         _nextBtn,
         _submitBtn;
 
-    if (elem.prop('id').length) {
-        _fchild = $("[data-fw-parent=\"" + elem.prop('id') + "\"]");
-    }
-
-    _tabs  = fwFind(".fw-tab");
-    _nTabs = _tabs.length;
-    _actualTab = _tabs.index(fwFind(".fw-tab.fw-active"));
-
-    _nextBtn = fwFind(".fw-next").click(Next);
-    _prevBtn = fwFind(".fw-prev").click(Prev);
-    _submitBtn = fwFind(".fw-submit");
-
-    fwFind(".fw-goto").click(GoToClick);
-    fwFind(".fw-goto-label").click(GoToLabelClick);
-
     _obj.Next = Next;
     _obj.Prev = Prev;
     _obj.First = First;
     _obj.Last = Last;
     _obj.GoTo = GoTo;
+    _obj.GoToLabel = GoToLabel;
 
-    indexLabels();
-    updateView();
+    __initFw();
+
+    function __initFw() {
+        if (elem.prop('id').length) {
+            _fchild = $("[data-fw-parent=\"" + elem.prop('id') + "\"]");
+        }
+
+        _tabs  = fwFind(".fw-tab");
+        _nTabs = _tabs.length;
+        _actualTab = _tabs.index(fwFind(".fw-tab.fw-active"));
+
+        _nextBtn = fwFind(".fw-next").click(Next);
+        _prevBtn = fwFind(".fw-prev").click(Prev);
+        _submitBtn = fwFind(".fw-submit");
+
+        fwFind(".fw-goto").click(GoToClick);
+        fwFind(".fw-goto-label").click(GoToLabelClick);
+
+        indexLabels();
+        updateView();
+    }
 
     function indexLabels() {
+        _tabs.each(function(i) {
+            if (hasLabel(i)) _labels[getLabel(i)] = i;
+        });
+    }
+
+    function reIndexLabels() {
+
         _tabs.each(function(i) {
             if (hasLabel(i)) _labels[getLabel(i)] = i;
         });
@@ -159,7 +173,15 @@ function FormWizard(elem) {
     }
 
     function GoToLabel(label) {
-        return GoTo(_labels[label]);
+        if (!(label in _labels)) {
+            __initFw();
+        }
+
+        if (label in _labels) {
+            return GoTo(_labels[label]);
+        }
+
+        return false;
     }
 
     function GoTo(n) {
@@ -251,12 +273,14 @@ function FormWizard(elem) {
         function isActualClass(val) {
             if (val == _actualTab) return true;
             if (hasLabel(_actualTab) && getLabel(_actualTab) == val) return true;
-            
+
             return false;
         }
     }
 
     return _obj;
 }
+
+modules.FormWizard = FormWizard;
 
 }(jQuery));
