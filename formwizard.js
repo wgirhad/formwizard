@@ -83,6 +83,7 @@ function FormWizard(elem) {
         _nTabs,
         _actualTab,
         _prevBtn,
+        _firstBtn,
         _nextBtn,
         _submitBtn;
 
@@ -104,8 +105,9 @@ function FormWizard(elem) {
         _nTabs = _tabs.length;
         _actualTab = _tabs.index(fwFind(".fw-tab.fw-active"));
 
-        _nextBtn = fwFind(".fw-next").click(Next);
-        _prevBtn = fwFind(".fw-prev").click(Prev);
+        _nextBtn  = fwFind(".fw-next").click(Next);
+        _prevBtn  = fwFind(".fw-prev").click(Prev);
+        _firstBtn = fwFind(".fw-first").click(First);
         _submitBtn = fwFind(".fw-submit");
 
         fwFind(".fw-goto").click(GoToClick);
@@ -229,8 +231,10 @@ function FormWizard(elem) {
     function hideShowNextPrev() {
         if (_actualTab <= 0) {
             _prevBtn.fwInputHide();
+            _firstBtn.fwInputHide();
         } else {
             _prevBtn.fwInputShow();
+            _firstBtn.fwInputShow();
         }
 
         if (_actualTab >= _nTabs-1) {
